@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <title>Cachr</title>
+
+    <style type="text/css">
+
+      body { margin: 40px; background: white; }
+      body, button, input { font-family: Arial, sans-serif; font-size: 11px; }
+      a { color: #cd3529; text-decoration: underline; }
+      a:hover { color: black; text-decoration: none; }
+      input { padding: 4px 5px; }
+
+      @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        button {
+          -webkit-appearance: none;
+          -webkit-user-select: none;
+          background-image: -webkit-linear-gradient(#ededed, #ededed 38%, #dedede);
+          border: 1px solid rgba(0, 0, 0, 0.25);
+          border-radius: 2px;
+          box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.75);
+          color: #444;
+          font: inherit;
+          margin: 0 1px 0 0;
+          text-shadow: 0 1px 0 rgb(240, 240, 240);
+          min-height: 2em;
+          min-width: 4em;
+          padding: 5px 8px
+        }
+
+        button:hover {
+          background-image: -webkit-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+          border-color: rgba(0, 0, 0, 0.3);
+          box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12),
+              inset 0 1px 2px rgba(255, 255, 255, 0.95);
+          color: black;
+        }
+
+        button:active {
+          background-image: -webkit-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+          box-shadow: none;
+          text-shadow: none;
+        }
+      }
+
+      #backends dd { position: relative; margin: 0 0 0 30px; padding: 0; }
+      #backends dd a.active { color: black; text-decoration: none; font-weight: bold; }
+      #entry { margin: 30px 0 0 0; padding: 29px; background: #f1f1f1; border: 1px solid lightgrey; }
+      #entry input { width: 300px; }
+      #entry .preview p {
+        margin: 0 0 10px 0;
+        padding: 0;
+        background: white;
+        border: 1px solid lightgrey;
+        white-space: pre;
+        font-family: "Courier New", monospace;
+      }
+
+      .exception { color: #cd3529; font-weight: bold; }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <dl id="backends">
+      <dt>Cache method (<em>backend</em>):</dt>
+      <dd><a href="?b=file"<?php if ($backendName == 'file') echo 'class="active"'; ?>>File</a> (store value in file sytem)</dd>
+      <dd><a href="?b=memory"<?php if ($backendName == 'memory') echo 'class="active"'; ?>>Memory</a> (store value in a PHP Array)</dd>
+      <dd><a href="?b=memcache"<?php if ($backendName == 'memcache') echo 'class="active"'; ?>>Memcache</a></dd>
+      <dd><a href="?b=memcached"<?php if ($backendName == 'memcached') echo 'class="active"'; ?>>Memcached</a></dd>
+      <dd><a href="?b=apc"<?php if ($backendName == 'apc') echo 'class="active"'; ?>>APC</a> (<em>Alternative PHP Cache</em>)</dd>
+    </dl>
+
+    <?php if ($exception): ?>
+      <div id="entry">
+        <div class="exception">
+          <?php echo $exception->getMessage(); ?>
+        </div>
+      </div>
+    <?php else: ?>
+      <?php if ($cache): ?>
+        <div id="entry">
+          <?php if ($entry !== null): ?>
+            <div class="preview">
+              <p>"<?php echo $entry; ?>"</p>
+              <a href="<?php echo $currentUrl; ?>&amp;delete">Delete cache entry</a>
+            </div>
+          <?php else: ?>
+            <form action="<?php echo $currentUrl; ?>" method="post">
+              <input type="text" name="value" placeholder="Value to set in cache">
+              <input type="text" name="ttl" placeholder="TTL in seconds (default: 0, infinite)">
+              <button type="submit">Store in cache</button>
+            </form>
+          <?php endif; ?>
+        </div>
+      <?php endif; ?>
+    <?php endif; ?>
+
+  </body>
+
+</html>
